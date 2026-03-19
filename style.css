@@ -1,4 +1,17 @@
 
+/* Сброс стилей */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+}
+
 /* Основной контейнер */
 body {
     min-height: 100vh;
@@ -12,7 +25,8 @@ body {
 main {
     flex: 1;
     padding: 20px;
-    padding-bottom: 80px; /* Отступ снизу для футера */
+    padding-bottom: 80px;
+    padding-top: 160px;
 }
 
 /* Шапка */
@@ -31,7 +45,46 @@ header {
     width: 120px;
 }
 
-/* Подвал - в потоке документа */
+/* Текст описания */
+p {
+    color: #aaa;
+    font-size: 1.2em;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Кнопка */
+.btn {
+    display: block;
+    width: 80%;
+    max-width: 280px;
+    margin: 30px auto;
+    padding: 18px 20px;
+    font-size: 1.4em;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    background: linear-gradient(135deg, #00d4ff, #0066ff);
+    border-radius: 30px;
+    box-shadow: 0 0 25px rgba(0, 212, 255, 0.5);
+}
+
+/* Навигация */
+nav {
+    text-align: center;
+    margin-top: 30px;
+}
+
+nav a {
+    display: block;
+    color: #00d4ff;
+    text-decoration: none;
+    margin: 15px 0;
+    font-size: 1.2em;
+}
+
+/* Подвал */
 footer {
     padding: 15px;
     text-align: center;
