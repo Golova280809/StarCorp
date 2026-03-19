@@ -26,8 +26,17 @@ body {
 
 /* Шапка */
 header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
     text-align: center;
-    margin-bottom: 40px;
+    padding: 15px;
+    background: linear-gradient(180deg, #0a0a1a 90%, transparent);
+}
+main {
+    margin-top: 180px;
+    text-align: center;
 }
 
 h1 {
@@ -45,7 +54,12 @@ p {
     margin: 10px 0 30px;
     text-align: center;
 }
-
+.logo {
+    width: 150px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
 /* Кнопка */
 .btn {
     display: inline-block;
