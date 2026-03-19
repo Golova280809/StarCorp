@@ -35,6 +35,7 @@ header {
     background: linear-gradient(180deg, #0a0a1a 90%, transparent);
 }
 main {
+    min-height: calc(100vh - 200px);
     margin-top: 180px;
     text-align: center;
 }
@@ -100,11 +101,15 @@ nav a:hover {
 
 /* Подвал */
 footer {
-    position: absolute;
-    bottom: 20px;
-    color: #555;
-    font-size: 0.9em;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px;
     text-align: center;
+    color: #555;
+    font-size: 0.85em;
+    background: linear-gradient(0deg, #0a0a1a 80%, transparent);
 }
 
 /* АДАПТАЦИЯ ПОД МОБИЛЬНЫЕ */
