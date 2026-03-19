@@ -1,27 +1,18 @@
 
-/* Сброс стилей */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-html, body {
-    width: 100%;
-    height: 100%;
-    overflow-x: hidden;
-}
-
-/* Основной стиль */
+/* Основной контейнер */
 body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
     background: linear-gradient(180deg, #0a0a1a 0%, #1a1a3a 100%);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Контент занимает всё место */
+main {
+    flex: 1;
     padding: 20px;
+    padding-bottom: 80px; /* Отступ снизу для футера */
 }
 
 /* Шапка */
@@ -33,107 +24,18 @@ header {
     text-align: center;
     padding: 15px;
     background: linear-gradient(180deg, #0a0a1a 90%, transparent);
+    z-index: 100;
 }
 
-main {
-    min-height: calc(100vh - 200px);
-    padding-bottom: 60px;
-}
-
-h1 {
-    font-size: 2.2em;
-    color: #00d4ff;
-    text-shadow: 0 0 20px #00d4ff, 0 0 40px #00d4ff;
-    margin: 0;
-    letter-spacing: 2px;
-}
-
-/* Описание */
-p {
-    color: #aaa;
-    font-size: 1.1em;
-    margin: 10px 0 30px;
-    text-align: center;
-}
 .logo {
-    width: 150px;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-}
-/* Кнопка */
-.btn {
-    display: inline-block;
-    padding: 18px 60px;
-    font-size: 1.4em;
-    font-weight: bold;
-    background: linear-gradient(135deg, #00d4ff, #0066ff);
-    border-radius: 30px;
-    text-decoration: none;
-    color: #fff;
-    box-shadow: 0 0 25px rgba(0, 212, 255, 0.5);
-    transition: all 0.3s ease;
+    width: 120px;
 }
 
-.btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 40px rgba(0, 212, 255, 0.8);
-}
-
-/* Навигация */
-nav {
-    margin-top: 50px;
-}
-
-nav a {
-    color: #00d4ff;
-    text-decoration: none;
-    margin: 0 20px;
-    font-size: 1.2em;
-    opacity: 0.8;
-    transition: all 0.3s ease;
-}
-
-nav a:hover {
-    opacity: 1;
-    text-shadow: 0 0 10px #00d4ff;
-}
-
-/* Подвал */
+/* Подвал - в потоке документа */
 footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
     padding: 15px;
     text-align: center;
     color: #555;
     font-size: 0.85em;
-    background: linear-gradient(0deg, #0a0a1a 80%, transparent);
-}
-
-/* АДАПТАЦИЯ ПОД МОБИЛЬНЫЕ */
-@media (max-width: 600px) {
-    h1 {
-        font-size: 1.8em;
-    }
-    
-    p {
-        font-size: 1em;
-    }
-    
-    .btn {
-        padding: 20px 80px;
-        font-size: 1.6em;
-    }
-    
-    nav a {
-        display: block;
-        margin: 15px 0;
-        font-size: 1.3em;
-    }
-    
-    footer {
-        font-size: 0.8em;
-    }
+    background: #0a0a1a;
 }
