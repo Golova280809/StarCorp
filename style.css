@@ -1,10 +1,5 @@
 
-/* Космическая тема */
-
 body {
-    background-color: #0a0a1a;
-    color: #ffffff;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
     min-height: 100vh;
@@ -12,60 +7,38 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    background: linear-gradient(180deg, #0a0a1a 0%, #1a1a3a 100%);
 }
 
 header {
     text-align: center;
-    padding-top: 60px;
-    padding-bottom: 20px;
-}
-
-footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    padding: 15px;
-    text-align: center;
-    color: #555;
-    font-size: 0.9em;
-    background: linear-gradient(to top, #0a0a1a, transparent);
+    margin-bottom: 30px;
 }
 
 h1 {
+    font-size: 2.2em;
     color: #00d4ff;
-    font-size: 2em;
-    text-transform: uppercase;
-    letter-spacing: 3px;
     text-shadow: 0 0 20px #00d4ff;
-    margin-bottom: 20px;
+    margin: 0;
 }
 
 p {
-    color: #888;
-    font-size: 1.2em;
+    color: #aaa;
+    font-size: 1.1em;
+    margin: 10px 0 30px;
 }
 
-/* Кнопка */
 .btn {
-    background: linear-gradient(45deg, #00d4ff, #0066ff);
-    color: white;
-    padding: 15px 40px;
-    border: none;
-    border-radius: 30px;
-    font-size: 1.2em;
-    cursor: pointer;
-    text-decoration: none;
     display: inline-block;
-    margin-top: 30px;
-    transition: transform 0.3s, box-shadow 0.3s;
+    padding: 15px 50px;
+    font-size: 1.3em;
+    background: linear-gradient(135deg, #00d4ff, #0066ff);
+    border-radius: 30px;
+    text-decoration: none;
+    color: #fff;
+    box-shadow: 0 0 25px rgba(0, 212, 255, 0.5);
 }
 
-.btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
-}
-
-/* Навигация */
 nav {
     margin-top: 40px;
 }
@@ -73,11 +46,19 @@ nav {
 nav a {
     color: #00d4ff;
     text-decoration: none;
-    margin: 0 15px;
-    font-size: 1em;
-    transition: color 0.3s;
+    margin: 0 20px;
+    font-size: 1.1em;
+    opacity: 0.8;
 }
 
 nav a:hover {
-    color: #ffffff;
+    opacity: 1;
+    text-shadow: 0 0 10px #00d4ff;
+}
+
+footer {
+    position: absolute;
+    bottom: 20px;
+    color: #555;
+    font-size: 0.85em;
 }
