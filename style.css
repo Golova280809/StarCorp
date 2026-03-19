@@ -34,10 +34,10 @@ header {
     padding: 15px;
     background: linear-gradient(180deg, #0a0a1a 90%, transparent);
 }
+
 main {
     min-height: calc(100vh - 200px);
-    margin-top: 180px;
-    text-align: center;
+    padding-bottom: 60px;
 }
 
 h1 {
