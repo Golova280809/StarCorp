@@ -1,6 +1,8 @@
 
-window.onload = function() {
+function showSplash() {
+    const splash = document.getElementById('splash-screen');
     const progressFill = document.querySelector('.progress-fill');
+    splash.style.display = 'flex';
     let progress = 0;
     
     const interval = setInterval(() => {
@@ -9,9 +11,9 @@ window.onload = function() {
             progress = 100;
             clearInterval(interval);
             setTimeout(() => {
-                document.getElementById('splash-screen').style.display = 'none';
+                window.location.href = 'game.html';
             }, 500);
         }
         progressFill.style.width = progress + '%';
     }, 200);
-};
+}
