@@ -1,4 +1,14 @@
 
+main h1 {
+    text-align: center;
+    color: #00d4ff;
+    font-size: 28px;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+}
+
 .rule-card {
     background: #1e2233;
     border-radius: 12px;
