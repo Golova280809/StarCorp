@@ -85,9 +85,10 @@ p {
 }
 
 footer {
-    padding: 15px;
     text-align: center;
-    color: #555;
-    font-size: 0.85em;
-    background: #0a0a1a;
+    padding: 20px;
+    color: #6b7280;
+    font-size: 12px;
+    border-top: 1px solid #2a2f45;
+    margin-top: auto;
 }
