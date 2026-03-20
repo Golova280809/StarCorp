@@ -4,37 +4,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Галактический Концерн</title>
+    <title>Hex Emoji Grid</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="game.css">
-
 </head>
 <body>
-    <div class="stars"></div>
-    <div class="stars2"></div>
-    <div class="stars3"></div>
-
-    <div id="splash">
-        <div class="loader"></div>
-        <p>Загрузка...</p>
+    <div id="hint">Кликни на гексагон → выбери эмодзи</div>
+    
+    <div id="selected-info">
+        <h3>Редактирование</h3>
+        <div>Координаты: <span id="coords">-</span></div>
+        <div>Эмодзи: <span id="current-emoji">-</span></div>
+        <div>Цвет: <span id="current-color">-</span></div>
+        <button onclick="changeEmoji()">Изменить эмодзи</button>
+        <button class="delete-btn" onclick="deleteHex()">Удалить</button>
+    </div>
+    
+    <div id="controls">
+        <button class="ctrl-btn" onclick="clearAll()">Очистить всё</button>
+        <button class="ctrl-btn" onclick="randomFill()">Случайно заполнить</button>
+        <button class="ctrl-btn danger" onclick="downloadImage()">Сохранить картинку</button>
+    </div>
+    
+    <div id="canvas-container">
+        <canvas id="game"></canvas>
+    </div>
+    
+    <div id="emoji-panel">
+        <button class="emoji-btn" data-emoji="⚡">⚡</button>
+        <button class="emoji-btn" data-emoji="💎">💎</button>
+        <button class="emoji-btn" data-emoji="🏭">🏭</button>
+        <button class="emoji-btn" data-emoji="🌱">🌱</button>
+        <button class="emoji-btn" data-emoji="⭐">⭐</button>
+        <button class="emoji-btn" data-emoji="💧">💧</button>
+        <button class="emoji-btn" data-emoji="🔥">🔥</button>
+        <button class="emoji-btn" data-emoji="❄️">❄️</button>
+        <button class="emoji-btn" data-emoji="🪐">🪐</button>
+        <button class="emoji-btn" data-emoji="🚀">🚀</button>
+        <button class="emoji-btn" data-emoji="👽">👽</button>
+        <button class="emoji-btn" data-emoji="🤖">🤖</button>
+        <button class="emoji-btn" data-emoji="💰">💰</button>
+        <button class="emoji-btn" data-emoji="🎯">🎯</button>
+        <button class="emoji-btn" data-emoji="🔮">🔮</button>
+        <button class="emoji-btn" data-emoji="🎲">🎲</button>
+        <button class="emoji-btn" data-emoji="💡">💡</button>
+        <button class="emoji-btn" data-emoji="🎭">🎭</button>
+        <button class="emoji-btn" data-emoji="🌈">🌈</button>
+        <button class="emoji-btn" data-emoji="🔔">🔔</button>
     </div>
 
-    <div id="main-menu">
-        <h1>🌌 ГАЛАКТИЧЕСКИЙ КОНЦЕРН</h1>
-        <a href="#" class="btn" onclick="startGame(); return false;">ИГРАТЬ</a>
-    </div>
-
-    <div id="game" class="hidden">
-        <div class="top-bar">
-            <div class="planet-name">🌍 Земля-7</div>
-            <div class="resources">
-                <span class="money">💰 1,000,000</span>
-                <span class="dark-matter">🟣 500</span>
-            </div>
-        </div>
-        <div class="content"></div>
-    </div>
-
-    <script src="game.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
