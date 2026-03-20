@@ -1,54 +1,148 @@
 
-.stars, .stars2, .stars3 {
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #0d0d1a;
+    font-family: 'Segoe UI', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+}
+
+#canvas-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+canvas {
+    display: block;
+    cursor: pointer;
+}
+
+/* Панель выбора эмодзи */
+#emoji-panel {
     position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    pointer-events: none;
-    z-index: -1;
-}
-
-.stars {
-    background: #000 url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="10" cy="10" r="0.5" fill="white"/><circle cx="50" cy="30" r="0.7" fill="white"/><circle cx="80" cy="60" r="0.5" fill="white"/><circle cx="30" cy="80" r="0.6" fill="white"/><circle cx="90" cy="20" r="0.4" fill="white"/><circle cx="20" cy="50" r="0.5" fill="white"/><circle cx="60" cy="90" r="0.6" fill="white"/><circle cx="70" cy="40" r="0.4" fill="white"/><circle cx="40" cy="10" r="0.5" fill="white"/><circle cx="5" cy="70" r="0.7" fill="white"/></svg>') repeat;
-    background-size: 200px 200px;
-    animation: twinkle 8s ease-in-out infinite;
-}
-
-.stars2 {
-    background: #000 url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="25" cy="15" r="0.6" fill="white"/><circle cx="75" cy="45" r="0.5" fill="white"/><circle cx="45" cy="75" r="0.7" fill="white"/><circle cx="15" cy="55" r="0.4" fill="white"/><circle cx="85" cy="85" r="0.5" fill="white"/><circle cx="55" cy="25" r="0.6" fill="white"/><circle cx="35" cy="95" r="0.5" fill="white"/></svg>') repeat;
-    background-size: 300px 300px;
-    animation: twinkle 12s ease-in-out infinite reverse;
-    opacity: 0.7;
-}
-
-.stars3 {
-    background: #000 url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><circle cx="25" cy="25" r="1" fill="white"/></svg>') repeat;
-    background-size: 100px 100px;
-    animation: twinkle 4s ease-in-out infinite;
-    opacity: 0.5;
-}
-
-@keyframes twinkle {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
-}
-
-.top-bar {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(20, 20, 40, 0.95);
+    border: 2px solid #446;
+    border-radius: 20px;
     padding: 15px 20px;
-    background: linear-gradient(180deg, rgba(10,10,30,0.95) 0%, rgba(10,10,30,0) 100%);
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 90%;
+    box-shadow: 0 0 30px rgba(100, 100, 255, 0.3);
     z-index: 100;
 }
 
-.planet-name {
-    font-size: 18px;
-    color: #7df;
-    text-shadow: 0 0 10px #7df;
+.emoji-btn {
+    width: 50px;
+    height: 50px;
+    font-size: 28px;
+    background: #223;
+    border: 2px solid #335;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.resources { display: flex; gap: 20px; }
-.money { color: #ffd700; text-shadow: 0 0 8px #ffd700; }
-.dark-matter { color: #b388ff; text-shadow: 0 0 8px #b388ff; }
+.emoji-btn:hover {
+    background: #335;
+    transform: scale(1.15);
+    border-color: #68f;
+}
+
+.emoji-btn.selected {
+    background: #48f;
+    border-color: #fff;
+    box-shadow: 0 0 15px #48f;
+}
+
+/* Кнопки управления */
+#controls {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.ctrl-btn {
+    background: #223;
+    border: 1px solid #446;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.ctrl-btn:hover {
+    background: #335;
+}
+
+.ctrl-btn.danger {
+    background: #422;
+    border-color: #644;
+}
+
+.ctrl-btn.danger:hover {
+    background: #633;
+}
+
+/* Подсказка */
+#hint {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    color: #668;
+    font-size: 14px;
+}
+
+/* Выбранный гексагон */
+#selected-info {
+    position: fixed;
+    top: 60px;
+    left: 20px;
+    background: rgba(20, 20, 40, 0.9);
+    border: 1px solid #446;
+    border-radius: 10px;
+    padding: 15px;
+    color: #fff;
+    display: none;
+}
+
+#selected-info h3 {
+    color: #48f;
+    margin-bottom: 10px;
+}
+
+#selected-info button {
+    margin-top: 10px;
+    margin-right: 5px;
+    padding: 8px 15px;
+    background: #224;
+    border: 1px solid #446;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#selected-info button:hover {
+    background: #335;
+}
+
+#selected-info .delete-btn {
+    background: #422;
+}
