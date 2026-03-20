@@ -1,0 +1,47 @@
+
+/* Настройки — Галактический Концерн */
+
+.subtitle {
+    color: #888;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.cards {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 0 15px;
+}
+
+.card {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 20px;
+    transition: transform 0.3s, border-color 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    border-color: #00d4ff;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+}
+
+.card h2 {
+    color: #00d4ff;
+    margin: 0 0 10px 0;
+    font-size: 18px;
+}
+
+.card p {
+    color: #aaa;
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.menu a.active {
+    color: #00d4ff;
+    border-bottom: 2px solid #00d4ff;
+}
