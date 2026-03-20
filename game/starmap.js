@@ -1,12 +1,4 @@
 
-const galaxy = {
-    name: "Млечный путь",
-    type: "spiral",
-    x: 0,
-    y: 0,
-    info: "Спиральная галактика | 100-400 млрд звёзд | Возраст: 13.6 млрд лет"
-};
-
 const map = document.getElementById('star-map');
 const menu = document.getElementById('system-menu');
 const overlay = document.getElementById('overlay');
@@ -15,6 +7,7 @@ let mapWidth = window.innerWidth;
 let mapHeight = window.innerHeight;
 let offsetX = 0;
 let offsetY = 0;
+let scale = 1;
 let isDragging = false;
 let lastX, lastY;
 
@@ -30,17 +23,42 @@ function wrapCoord(val, max) {
 function render() {
     map.innerHTML = '';
     
-    const screenX = wrapCoord(galaxy.x + offsetX, mapWidth);
-    const screenY = wrapCoord(galaxy.y + offsetY, mapHeight);
+    const centerX = mapWidth / 2;
+    const centerY = mapHeight / 2;
     
-    const g = document.createElement('div');
-    g.className = 'galaxy';
-    g.style.left = screenX + 'px';
-    g.style.top = screenY + 'px';
+    // Галактика
+    const galaxy = document.createElement('div');
+    galaxy.className = 'milky-way';
+    galaxy.style.left = centerX + 'px';
+    galaxy.style.top = centerY + 'px';
+    galaxy.style.transform = `translate(-50%, -50%) scale(${scale})`;
+    galaxy.addEventListener('click', () => openMenu());
+    map.appendChild(galaxy);
     
-    g.addEventListener('click', () => openMenu(galaxy));
-    map.appendChild(g);
+    // Звёзды вокруг
+    for (let i = 0; i < 200; i++) {
+        const star = document.createElement('div');
+        star.className = 'bg-star';
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 50 + Math.random() * 300;
+        const x = centerX + Math.cos(angle) * dist * scale;
+        const y = centerY + Math.sin(angle) * dist * scale;
+        star.style.left = x + 'px';
+        star.style.top = y + 'px';
+        star.style.width = (1 + Math.random() * 2) + 'px';
+        star.style.height = star.style.width;
+        star.style.opacity = 0.3 + Math.random() * 0.7;
+        map.appendChild(star);
+    }
 }
+
+// Зум колёсиком
+map.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    scale = Math.max(0.3, Math.min(3, scale * delta));
+    render();
+});
 
 // Перетаскивание
 map.addEventListener('mousedown', (e) => {
@@ -63,26 +81,29 @@ map.addEventListener('mouseleave', () => isDragging = false);
 
 // Тач
 map.addEventListener('touchstart', (e) => {
-    isDragging = true;
-    lastX = e.touches[0].clientX;
-    lastY = e.touches[0].clientY;
+    if (e.touches.length === 1) {
+        isDragging = true;
+        lastX = e.touches[0].clientX;
+        lastY = e.touches[0].clientY;
+    }
 });
 
 map.addEventListener('touchmove', (e) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    offsetX += e.touches[0].clientX - lastX;
-    offsetY += e.touches[0].clientY - lastY;
-    lastX = e.touches[0].clientX;
-    lastY = e.touches[0].clientY;
-    render();
+    if (e.touches.length === 1 && isDragging) {
+        e.preventDefault();
+        offsetX += e.touches[0].clientX - lastX;
+        offsetY += e.touches[0].clientY - lastY;
+        lastX = e.touches[0].clientX;
+        lastY = e.touches[0].clientY;
+        render();
+    }
 });
 
 map.addEventListener('touchend', () => isDragging = false);
 
-function openMenu(s) {
-    document.getElementById('menu-title').textContent = s.name;
-    document.getElementById('menu-info').textContent = s.info;
+function openMenu() {
+    document.getElementById('menu-title').textContent = 'Млечный путь';
+    document.getElementById('menu-info').textContent = 'Спиральная галактика | 100-400 млрд звёзд | Возраст: 13.6 млрд лет';
     menu.style.display = 'block';
     overlay.style.display = 'block';
 }
