@@ -1,65 +1,40 @@
 
 // === КОНСТАНТЫ ===
-const HEX_SIZE = 45;
-const GRID_RADIUS = 7;
+const HEX_SIZE = 50;
+const GRID_COLS = 10;
+const GRID_ROWS = 10;
 
-// === МАТЕМАТИКА ГЕКСАГОНОВ ===
+// === МАТЕМАТИКА КВАДРАТНОЙ СЕТКИ ===
 
-function hexToPixel(q, r) {
-    const x = HEX_SIZE * (Math.sqrt(3) * q + Math.sqrt(3)/2 * r);
-    const y = HEX_SIZE * (3/2 * r);
+function getCellPosition(col, row) {
+    const x = col * HEX_SIZE * 1.8 + HEX_SIZE;
+    const y = row * HEX_SIZE * 1.8 + HEX_SIZE;
     return { x, y };
 }
 
-function pixelToHex(x, y) {
-    const q = (Math.sqrt(3)/3 * x - 1/3 * y) / HEX_SIZE;
-    const r = (2/3 * y) / HEX_SIZE;
-    return hexRound(q, r);
-}
-
-function hexRound(q, r) {
-    let s = -q - r;
-    let rq = Math.round(q);
-    let rr = Math.round(r);
-    let rs = Math.round(s);
-    
-    const qDiff = Math.abs(rq - q);
-    const rDiff = Math.abs(rr - r);
-    const sDiff = Math.abs(rs - s);
-    
-    if (qDiff > rDiff && qDiff > sDiff) rq = -rr - rs;
-    else if (rDiff > sDiff) rr = -rq - rs;
-    
-    return { q: rq, r: rr };
-}
-
-function isInGrid(q, r) {
-    const dist = Math.abs(q) + Math.abs(r) + Math.abs(-q - r);
-    return dist <= GRID_RADIUS * 2;
+function getCellFromClick(x, y) {
+    const col = Math.floor(x / (HEX_SIZE * 1.8));
+    const row = Math.floor(y / (HEX_SIZE * 1.8));
+    if (col >= 0 && col < GRID_COLS && row >= 0 && row < GRID_ROWS) {
+        return { col, row };
+    }
+    return null;
 }
 
 // === РИСОВАНИЕ ===
 
-function drawHex(ctx, q, r, color, emoji, isSelected = false) {
-    const { x, y } = hexToPixel(q, r);
-    const cx = canvas.width / 2 + x;
-    const cy = canvas.height / 2 + y;
-    
-    // Гексагон
+function drawCell(ctx, col, row, color, emoji, isSelected = false) {
+    const { x, y } = getCellPosition(col, row);
+    const size = HEX_SIZE - 5;
+
+    // Квадрат
     ctx.beginPath();
-    for (let i = 0; i < 6; i++) {
-        const angle = Math.PI / 180 * (60 * i - 30);
-        const px = cx + (HEX_SIZE - 3) * Math.cos(angle);
-        const py = cy + (HEX_SIZE - 3) * Math.sin(angle);
-        if (i === 0) ctx.moveTo(px, py);
-        else ctx.lineTo(px, py);
-    }
-    ctx.closePath();
+    ctx.roundRect(x, y, size, size, 8);
     
     // Заливка
     ctx.fillStyle = color || '#1a1a2e';
     ctx.fill();
-    
+
     // Обводка
     if (isSelected) {
         ctx.strokeStyle = '#fff';
@@ -77,32 +52,28 @@ function drawHex(ctx, q, r, color, emoji, isSelected = false) {
     }
     ctx.stroke();
     ctx.shadowBlur = 0;
-    
+
     // Эмодзи
     if (emoji) {
         ctx.font = '28px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(emoji, cx, cy);
+        ctx.fillText(emoji, x + size/2, y + size/2);
     }
 }
 
-function drawGrid(ctx, hexes, selectedHex) {
+function drawGrid(ctx, cells, selectedCell) {
     // Фон
     ctx.fillStyle = '#0d0d1a';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
+
     // Сетка
-    for (let q = -GRID_RADIUS; q <= GRID_RADIUS; q++) {
-        const r1 = Math.max(-GRID_RADIUS, -q - GRID_RADIUS);
-        const r2 = Math.min(GRID_RADIUS, -q + GRID_RADIUS);
-        
-        for (let r = r1; r <= r2; r++) {
-            const key = `${q},${r}`;
-            const hex = hexes[key];
-            const isSelected = selectedHex && selectedHex.q === q && selectedHex.r === r;
-            
-            drawHex(ctx, q, r, hex?.color || null, hex?.emoji || null, isSelected);
+    for (let col = 0; col < GRID_COLS; col++) {
+        for (let row = 0; row < GRID_ROWS; row++) {
+            const key = `${col},${row}`;
+            const cell = cells[key];
+            const isSelected = selectedCell && selectedCell.col === col && selectedCell.row === row;
+            drawCell(ctx, col, row, cell?.color || null, cell?.emoji || null, isSelected);
         }
     }
 }
