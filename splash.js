@@ -11,7 +11,7 @@ function showSplash() {
             progress = 100;
             clearInterval(interval);
             setTimeout(() => {
-                window.location.href = 'game/map.html';
+                window.location.href = 'game/game.html';
             }, 500);
         }
         progressFill.style.width = progress + '%';
