@@ -4,31 +4,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hex Emoji Grid</title>
+    <title>Галактический Концерн</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="hint">Кликни на гексагон → выбери эмодзи</div>
-    
-    <div id="selected-info">
-        <h3>Редактирование</h3>
-        <div>Координаты: <span id="coords">-</span></div>
-        <div>Эмодзи: <span id="current-emoji">-</span></div>
-        <div>Цвет: <span id="current-color">-</span></div>
-        <button onclick="changeEmoji()">Изменить эмодзи</button>
-        <button class="delete-btn" onclick="deleteHex()">Удалить</button>
-    </div>
-    
-    <div id="controls">
-        <button class="ctrl-btn" onclick="clearAll()">Очистить всё</button>
-        <button class="ctrl-btn" onclick="randomFill()">Случайно заполнить</button>
-        <button class="ctrl-btn danger" onclick="downloadImage()">Сохранить картинку</button>
-    </div>
-    
     <div id="canvas-container">
         <canvas id="game"></canvas>
     </div>
-    
+
+    <!-- Подсказка -->
+    <div id="hint">Кликни на гексагон → выбери эмодзи</div>
+
+    <!-- Информация о выбранном -->
+    <div id="selected-info">
+        <h3>РЕДАКТИРОВАНИЕ</h3>
+        <p>Координаты: <span id="coords">-</span></p>
+        <p>Эмодзи: <span id="current-emoji">-</span></p>
+        <p>Цвет: <span id="current-color">-</span></p>
+        <button onclick="changeEmoji()">Изменить</button>
+        <button class="delete-btn" onclick="deleteHex()">Удалить</button>
+    </div>
+
+    <!-- Кнопки управления -->
+    <div id="controls">
+        <button class="ctrl-btn danger" onclick="clearAll()">Очистить</button>
+        <button class="ctrl-btn" onclick="randomFill()">Случайно</button>
+        <button class="ctrl-btn" onclick="downloadImage()">Сохранить</button>
+    </div>
+
+    <!-- Панель эмодзи -->
     <div id="emoji-panel">
         <button class="emoji-btn" data-emoji="⚡">⚡</button>
         <button class="emoji-btn" data-emoji="💎">💎</button>
@@ -52,6 +56,8 @@
         <button class="emoji-btn" data-emoji="🔔">🔔</button>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Два файла скриптов -->
+    <script src="hex.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
