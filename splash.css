@@ -12,6 +12,7 @@
     z-index: 9999;
 }
 
+
 .splash-content {
     text-align: center;
     background: rgba(0, 0, 0, 0.7);
@@ -19,7 +20,10 @@
     border-radius: 20px;
     width: 80%;
     max-width: 300px;
-    margin-top: 300px;
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .splash-content h1 {
