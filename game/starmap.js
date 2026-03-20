@@ -1,11 +1,11 @@
 
-const systems = [
-    { id: 1, name: "Альфа Центавра", type: "yellow", x: 200, y: 300, info: "Население: 5.2 млрд" },
-    { id: 2, name: "Сириус", type: "blue", x: 600, y: 200, info: "Население: 1.8 млрд" },
-    { id: 3, name: "Вега", type: "white", x: 1000, y: 500, info: "Население: 3.1 млрд" },
-    { id: 4, name: "Антарес", type: "red", x: 150, y: 450, info: "Население: 0.8 млрд" },
-    { id: 5, name: "Бетельгейзе", type: "orange", x: 700, y: 400, info: "Население: 2.3 млрд" }
-];
+const galaxy = {
+    name: "Млечный путь",
+    type: "spiral",
+    x: 0,
+    y: 0,
+    info: "Спиральная галактика | 100-400 млрд звёзд | Возраст: 13.6 млрд лет"
+};
 
 const map = document.getElementById('star-map');
 const menu = document.getElementById('system-menu');
@@ -30,20 +30,16 @@ function wrapCoord(val, max) {
 function render() {
     map.innerHTML = '';
     
-    systems.forEach(s => {
-        const screenX = wrapCoord(s.x + offsetX, mapWidth);
-        const screenY = wrapCoord(s.y + offsetY, mapHeight);
-        
-        const star = document.createElement('div');
-        star.className = `star star-${s.type}`;
-        star.style.width = '32px';
-        star.style.height = '32px';
-        star.style.left = screenX + 'px';
-        star.style.top = screenY + 'px';
-        
-        star.addEventListener('click', () => openMenu(s));
-        map.appendChild(star);
-    });
+    const screenX = wrapCoord(galaxy.x + offsetX, mapWidth);
+    const screenY = wrapCoord(galaxy.y + offsetY, mapHeight);
+    
+    const g = document.createElement('div');
+    g.className = 'galaxy';
+    g.style.left = screenX + 'px';
+    g.style.top = screenY + 'px';
+    
+    g.addEventListener('click', () => openMenu(galaxy));
+    map.appendChild(g);
 }
 
 // Перетаскивание
