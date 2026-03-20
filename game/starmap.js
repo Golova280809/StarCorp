@@ -55,8 +55,8 @@ map.addEventListener('mousedown', (e) => {
 
 map.addEventListener('mousemove', (e) => {
     if (!isDragging) return;
-    offsetX += lastX - e.clientX;
-    offsetY += lastY - e.clientY;
+    offsetX += e.clientX - lastX;
+    offsetY += e.clientY - lastY;
     lastX = e.clientX;
     lastY = e.clientY;
     render();
@@ -75,8 +75,8 @@ map.addEventListener('touchstart', (e) => {
 map.addEventListener('touchmove', (e) => {
     if (!isDragging) return;
     e.preventDefault();
-    offsetX += lastX - e.touches[0].clientX;
-    offsetY += lastY - e.touches[0].clientY;
+    offsetX += e.touches[0].clientX - lastX;
+    offsetY += e.touches[0].clientY - lastY;
     lastX = e.touches[0].clientX;
     lastY = e.touches[0].clientY;
     render();
