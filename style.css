@@ -64,6 +64,10 @@ p {
     margin-top: 20px;
 }
 
+.menu a.active {
+    color: #00d4ff;
+    border-bottom: 2px solid #00d4ff;
+}
 .btn {
     display: block;
     width: 80%;
