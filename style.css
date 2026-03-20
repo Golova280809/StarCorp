@@ -1,5 +1,4 @@
 
-/* Сброс стилей */
 * {
     margin: 0;
     padding: 0;
@@ -12,7 +11,6 @@ html, body {
     overflow-x: hidden;
 }
 
-/* Основной контейнер */
 body {
     min-height: 100vh;
     display: flex;
@@ -21,15 +19,13 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Контент занимает всё место */
 main {
     flex: 1;
     padding: 20px;
     padding-bottom: 80px;
-    padding-top: 160px;
+    padding-top: 180px;
 }
 
-/* Шапка */
 header {
     position: fixed;
     top: 0;
@@ -45,7 +41,27 @@ header {
     width: 120px;
 }
 
-/* Текст описания */
+.menu {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #333;
+}
+
+.menu a {
+    color: #aaa;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 5px 10px;
+    transition: color 0.3s;
+}
+
+.menu a:hover {
+    color: #00d4ff;
+}
+
 p {
     color: #aaa;
     font-size: 1.2em;
@@ -53,7 +69,6 @@ p {
     margin-top: 20px;
 }
 
-/* Кнопка */
 .btn {
     display: block;
     width: 80%;
@@ -70,7 +85,6 @@ p {
     box-shadow: 0 0 25px rgba(0, 212, 255, 0.5);
 }
 
-/* Навигация */
 nav {
     text-align: center;
     margin-top: 30px;
@@ -84,7 +98,6 @@ nav a {
     font-size: 1.2em;
 }
 
-/* Подвал */
 footer {
     padding: 15px;
     text-align: center;
