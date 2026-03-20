@@ -14,6 +14,34 @@ body {
     position: relative;
 }
 
+/* Галактика */
+.galaxy {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, 
+        #fff 0%, 
+        #ffd700 20%, 
+        #ff8800 40%, 
+        #ff4444 60%, 
+        #440044 80%, 
+        transparent 100%);
+    box-shadow: 
+        0 0 60px #ff8800,
+        0 0 100px #ff4400,
+        0 0 150px #440044;
+    cursor: pointer;
+    transform: translate(-50%, -50%);
+    animation: rotate 60s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Звезды */
 .star {
     position: absolute;
     border-radius: 50%;
@@ -48,6 +76,7 @@ body {
     box-shadow: 0 0 20px #ff8800;
 }
 
+/* Маршруты */
 .route {
     position: absolute;
     height: 2px;
@@ -56,6 +85,7 @@ body {
     pointer-events: none;
 }
 
+/* Меню системы */
 #system-menu {
     position: fixed;
     top: 50%;
@@ -109,6 +139,7 @@ body {
     cursor: pointer;
 }
 
+/* Оверлей */
 .overlay {
     position: fixed;
     top: 0;
