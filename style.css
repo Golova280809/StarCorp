@@ -13,17 +13,19 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+
 main {
     flex: 1;
-    padding: 0;
+    padding: 0 !important;
     padding-bottom: 80px;
 }
 
 .logo {
-    width: 100%;
-    max-width: 400px;
+    width: 100% !important;
+    max-width: 100% !important;
     display: block;
-    margin: 0 auto;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .menu {
