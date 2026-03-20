@@ -4,14 +4,14 @@ function showSplash() {
     const progressFill = document.querySelector('.progress-fill');
     splash.style.display = 'flex';
     let progress = 0;
-    
+
     const interval = setInterval(() => {
         progress += Math.random() * 15;
         if (progress >= 100) {
             progress = 100;
             clearInterval(interval);
             setTimeout(() => {
-                window.location.href = 'game.html';
+                window.location.href = 'game/starmap.html';
             }, 500);
         }
         progressFill.style.width = progress + '%';
