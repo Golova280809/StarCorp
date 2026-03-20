@@ -37,8 +37,12 @@ header {
     z-index: 100;
 }
 
+
 .logo {
-    width: 120px;
+    width: 100%;
+    max-width: 400px;
+    display: block;
+    margin: 0 auto;
 }
 
 .menu {
