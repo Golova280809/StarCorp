@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Звёздная карта</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0a1a; min-height: 100vh; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
+        #star-map { width: 100vw; height: 100vh; position: relative; }
+        .star { position: absolute; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; transition: transform 0.3s; }
+        .star:hover { transform: scale(1.3); }
+        .star-yellow { background: radial-gradient(circle, #fff 0%, #ffd700 50%, transparent 70%); box-shadow: 0 0 20px #ffd700; }
+        .star-blue { background: radial-gradient(circle, #fff 0%, #00d4ff 50%, transparent 70%); box-shadow: 0 0 20px #00d4ff; }
+        .route { position: absolute; height: 2px; background: rgba(100,100,255,0.5); transform-origin: left center; pointer-events: none; }
+        #system-menu { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(10,15,30,0.95); border: 2px solid #00d4ff; border-radius: 15px; padding: 25px; min-width: 300px; display: none; z-index: 1000; }
+        #system-menu h2 { color: #00d4ff; margin-bottom: 15px; text-align: center; }
+        #system-menu .info { color: #aaa; margin-bottom: 20px; font-size: 14px; }
+        #system-menu button { background: #1a2a4a; border: 1px solid #00d4ff; color: #00d4ff; padding: 12px; border-radius: 8px; cursor: pointer; width: 100%; margin-bottom: 8px; }
+        #system-menu button:hover { background: #00d4ff; color: #000; }
+        .close-btn { position: absolute; top: 8px; right: 12px; background: none; border: none; color: #ff4444; font-size: 22px; cursor: pointer; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 999; }
+    </style>
+</head>
+<body>
+    <div id="star-map"></div>
+    <div class="overlay" id="overlay"></div>
+    <div id="system-menu">
+        <button class="close-btn" onclick="closeMenu()">×</button>
+        <h2 id="menu-title">Система</h2>
+        <div class="info" id="menu-info">Информация</div>
+        <button>📊 Торговля</button>
+        <button>🚀 Квесты</button>
+        <button>⚔️ Фракции</button>
+        <button>🔧 Ремонт</button>
+    </div>
+    <script>
+        const systems = [
+            { id: 1, name: "Альфа Центавра", type: "yellow", x: 200, y: 300, info: "Население: 5.2 млрд" },
+            { id: 2, name: "Сириус", type: "blue", x: 600, y: 200, info: "Население: 1.8 млрд" }
+        ];
+        const routes = [{ from: 1, to: 2 }];
+        const map = document.getElementById('star-map');
+        const menu = document.getElementById('system-menu');
+        const overlay = document.getElementById('overlay');
+        
+        function drawRoutes() {
+            routes.forEach(r => {
+                const f = systems.find(s => s.id === r.from);
+                const t = systems.find(s => s.id === r.to);
+                const line = document.createElement('div');
+                line.className = 'route';
+                const dx = t.x - f.x, dy = t.y - f.y;
+                const len = Math.sqrt(dx*dx + dy*dy);
+                const ang = Math.atan2(dy, dx) * 180 / Math.PI;
+                line.style.width = len + 'px';
+                line.style.left = f.x + 15 + 'px';
+                line.style.top = f.y + 15 + 'px';
+                line.style.transform = `rotate(${ang}deg)`;
+                map.appendChild(line);
+            });
+        }
+        
+        function drawStars() {
+            systems.forEach(s => {
+                const star = document.createElement('div');
+                star.className = `star star-${s.type}`;
+                star.style.left = s.x + 'px';
+                star.style.top = s.y + 'px';
+                star.addEventListener('click', () => openMenu(s));
+                map.appendChild(star);
+            });
+        }
+        
+        function openMenu(s) {
+            document.getElementById('menu-title').textContent = s.name;
+            document.getElementById('menu-info').textContent = s.info;
+            menu.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+        
+        function closeMenu() { menu.style.display = 'none'; overlay.style.display = 'none'; }
+        overlay.addEventListener('click', closeMenu);
+        drawRoutes(); drawStars();
+    </script>
+</body>
+</html>
