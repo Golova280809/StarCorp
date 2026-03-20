@@ -1,112 +1,79 @@
 
-const canvas = document.getElementById('game');
-const ctx = canvas.getContext('2d');
+// === КОНСТАНТЫ ===
+const HEX_SIZE = 50;
+const GRID_COLS = 10;
+const GRID_ROWS = 10;
 
-let hexes = {};
-let selectedHex = null;
-let selectedEmoji = null;
+// === МАТЕМАТИКА КВАДРАТНОЙ СЕТКИ ===
 
-const emojiColors = {
-    '⚡': '#4af', '💎': '#d94a4a', '🏭': '#888', '🌱': '#4ad94a',
-    '⭐': '#ffdd44', '💧': '#44adff', '🔥': '#ff6a4a', '❄️': '#aaddff',
-    '🪐': '#d4a574', '🚀': '#f44', '👽': '#9f4ad4', '🤖': '#777',
-    '💰': '#4ad94a', '🎯': '#f4a', '🔮': '#a4f', '🎲': '#888',
-    '💡': '#ff4', '🎭': '#f88', '🌈': '#f88', '🔔': '#f4a'
-};
-
-function addEmoji(q, r, emoji) {
-    hexes[`${q},${r}`] = { q, r, emoji, color: emojiColors[emoji] || '#4af' };
-    drawGrid(ctx, hexes, selectedHex);
+function getCellPosition(col, row) {
+    const x = col * HEX_SIZE * 1.8 + HEX_SIZE;
+    const y = row * HEX_SIZE * 1.8 + HEX_SIZE;
+    return { x, y };
 }
 
-function deleteHex() {
-    if (selectedHex) {
-        delete hexes[`${selectedHex.q},${selectedHex.r}`];
-        selectedHex = null;
-        document.getElementById('selected-info').style.display = 'none';
-        drawGrid(ctx, hexes, selectedHex);
+function getCellFromClick(x, y) {
+    const col = Math.floor(x / (HEX_SIZE * 1.8));
+    const row = Math.floor(y / (HEX_SIZE * 1.8));
+    if (col >= 0 && col < GRID_COLS && row >= 0 && row < GRID_ROWS) {
+        return { col, row };
+    }
+    return null;
+}
+
+// === РИСОВАНИЕ ===
+
+function drawCell(ctx, col, row, color, emoji, isSelected = false) {
+    const { x, y } = getCellPosition(col, row);
+    const size = HEX_SIZE - 5;
+
+    // Квадрат
+    ctx.beginPath();
+    ctx.roundRect(x, y, size, size, 8);
+    
+    // Заливка
+    ctx.fillStyle = color || '#1a1a2e';
+    ctx.fill();
+
+    // Обводка
+    if (isSelected) {
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 4;
+        ctx.shadowColor = '#fff';
+        ctx.shadowBlur = 15;
+    } else if (emoji) {
+        ctx.strokeStyle = '#335';
+        ctx.lineWidth = 2;
+        ctx.shadowBlur = 0;
+    } else {
+        ctx.strokeStyle = '#223';
+        ctx.lineWidth = 1;
+        ctx.shadowBlur = 0;
+    }
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // Эмодзи
+    if (emoji) {
+        ctx.font = '28px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(emoji, x + size/2, y + size/2);
     }
 }
 
-function clearAll() {
-    hexes = {};
-    selectedHex = null;
-    document.getElementById('selected-info').style.display = 'none';
-    drawGrid(ctx, hexes, selectedHex);
-}
+function drawGrid(ctx, cells, selectedCell) {
+    // Фон
+    ctx.fillStyle = '#0d0d1a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-function randomFill() {
-    const emojis = Object.keys(emojiColors);
-    for (let q = -GRID_RADIUS; q <= GRID_RADIUS; q++) {
-        for (let r = Math.max(-GRID_RADIUS, -q - GRID_RADIUS); r <= Math.min(GRID_RADIUS, -q + GRID_RADIUS); r++) {
-            if (Math.random() > 0.5) addEmoji(q, r, emojis[Math.floor(Math.random() * emojis.length)]);
+    // Сетка
+    for (let col = 0; col < GRID_COLS; col++) {
+        for (let row = 0; row < GRID_ROWS; row++) {
+            const key = `${col},${row}`;
+            const cell = cells[key];
+            const isSelected = selectedCell && selectedCell.col === col && selectedCell.row === row;
+            drawCell(ctx, col, row, cell?.color || null, cell?.emoji || null, isSelected);
         }
     }
 }
-
-function changeEmoji() {
-    if (selectedHex && selectedEmoji) {
-        const hex = hexes[`${selectedHex.q},${selectedHex.r}`];
-        hex.emoji = selectedEmoji;
-        hex.color = emojiColors[selectedEmoji];
-        updateSelectedInfo();
-        drawGrid(ctx, hexes, selectedHex);
-    }
-}
-
-function downloadImage() {
-    const link = document.createElement('a');
-    link.download = 'hex-grid.png';
-    link.href = canvas.toDataURL();
-    link.click();
-}
-
-canvas.addEventListener('click', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    const hex = pixelToHex(e.clientX - rect.left - canvas.width / 2, e.clientY - rect.top - canvas.height / 2);
-    const key = `${hex.q},${hex.r}`;
-
-    if (!isInGrid(hex.q, hex.r)) {
-        selectedHex = null;
-        document.getElementById('selected-info').style.display = 'none';
-        drawGrid(ctx, hexes, selectedHex);
-        return;
-    }
-
-    if (hexes[key]) {
-        selectedHex = hex;
-        updateSelectedInfo();
-        document.getElementById('selected-info').style.display = 'block';
-    } else if (selectedEmoji) {
-        addEmoji(hex.q, hex.r, selectedEmoji);
-        selectedHex = hex;
-        updateSelectedInfo();
-        document.getElementById('selected-info').style.display = 'block';
-    } else {
-        selectedHex = null;
-        document.getElementById('selected-info').style.display = 'none';
-    }
-    drawGrid(ctx, hexes, selectedHex);
-});
-
-function updateSelectedInfo() {
-    if (selectedHex) {
-        const hex = hexes[`${selectedHex.q},${selectedHex.r}`];
-        document.getElementById('coords').textContent = `(${selectedHex.q}, ${selectedHex.r})`;
-        document.getElementById('current-emoji').textContent = hex?.emoji || '-';
-        document.getElementById('current-color').textContent = hex?.color || '-';
-    }
-}
-
-document.querySelectorAll('.emoji-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-        selectedEmoji = btn.dataset.emoji;
-        if (selectedHex) { addEmoji(selectedHex.q, selectedHex.r, selectedEmoji); updateSelectedInfo(); }
-    });
-});
-
-function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; drawGrid(ctx, hexes, selectedHex); }
-window.addEventListener('resize', resize);
-resize();
