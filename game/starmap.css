@@ -12,36 +12,66 @@ body {
     width: 100vw;
     height: 100vh;
     position: relative;
+    background: radial-gradient(ellipse at center, #0d0d20 0%, #050510 100%);
 }
 
-/* Галактика */
-.galaxy {
+/* Млечный путь */
+.milky-way {
     position: absolute;
-    width: 200px;
-    height: 200px;
+    width: 300px;
+    height: 300px;
     border-radius: 50%;
-    background: radial-gradient(ellipse at center, 
-        #fff 0%, 
-        #ffd700 20%, 
-        #ff8800 40%, 
-        #ff4444 60%, 
-        #440044 80%, 
-        transparent 100%);
+    background: 
+        radial-gradient(ellipse at 30% 30%, rgba(255,255,255,0.9) 0%, transparent 5%),
+        radial-gradient(ellipse at 70% 70%, rgba(255,255,255,0.8) 0%, transparent 4%),
+        radial-gradient(ellipse at center, #fff5e6 0%, #ffd700 15%, #ff9500 30%, #ff6b35 45%, #c41e3a 60%, #4a0e4e 80%, transparent 100%);
     box-shadow: 
-        0 0 60px #ff8800,
-        0 0 100px #ff4400,
-        0 0 150px #440044;
+        0 0 80px rgba(255,200,100,0.6),
+        0 0 150px rgba(255,150,50,0.4),
+        0 0 250px rgba(200,50,100,0.2),
+        inset 0 0 100px rgba(255,255,255,0.3);
     cursor: pointer;
-    transform: translate(-50%, -50%);
-    animation: rotate 60s linear infinite;
+    animation: galaxy-spin 120s linear infinite;
+    overflow: visible;
 }
 
-@keyframes rotate {
-    from { transform: translate(-50%, -50%) rotate(0deg); }
-    to { transform: translate(-50%, -50%) rotate(360deg); }
+.milky-way::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80%;
+    height: 20%;
+    transform: translate(-50%, -50%) rotate(-15deg);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    filter: blur(20px);
 }
 
-/* Звезды */
+.milky-way::after {
+    content: '';
+    position: absolute;
+    top: 20%;
+    left: 20%;
+    width: 60%;
+    height: 60%;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(100,50,150,0.3) 100%);
+}
+
+@keyframes galaxy-spin {
+    from { transform: translate(-50%, -50%) rotate(0deg) scale(var(--scale, 1)); }
+    to { transform: translate(-50%, -50%) rotate(360deg) scale(var(--scale, 1)); }
+}
+
+/* Фоновые звёзды */
+.bg-star {
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+/* Звёзды в системах */
 .star {
     position: absolute;
     border-radius: 50%;
