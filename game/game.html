@@ -1,0 +1,38 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Галактический Концерн</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="stars2"></div>
+    <div class="stars3"></div>
+
+    <div id="splash">
+        <div class="loader"></div>
+        <p>Загрузка...</p>
+    </div>
+
+    <div id="main-menu">
+        <h1>🌌 ГАЛАКТИЧЕСКИЙ КОНЦЕРН</h1>
+        <a href="#" class="btn" onclick="startGame(); return false;">ИГРАТЬ</a>
+    </div>
+
+    <div id="game" class="hidden">
+        <div class="top-bar">
+            <div class="planet-name">🌍 Земля-7</div>
+            <div class="resources">
+                <span class="money">💰 1,000,000</span>
+                <span class="dark-matter">🟣 500</span>
+            </div>
+        </div>
+        <div class="content"></div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
