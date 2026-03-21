@@ -1,112 +1,173 @@
 
-const canvas = document.getElementById('game');
+const canvas = document.getElementById('gameField');
 const ctx = canvas.getContext('2d');
 
-let hexes = {};
-let selectedHex = null;
-let selectedEmoji = null;
+const centerX = canvas.width / 2;
+const centerY = canvas.height / 2;
 
-const emojiColors = {
-    '⚡': '#4af', '💎': '#d94a4a', '🏭': '#888', '🌱': '#4ad94a',
-    '⭐': '#ffdd44', '💧': '#44adff', '🔥': '#ff6a4a', '❄️': '#aaddff',
-    '🪐': '#d4a574', '🚀': '#f44', '👽': '#9f4ad4', '🤖': '#777',
-    '💰': '#4ad94a', '🎯': '#f4a', '🔮': '#a4f', '🎲': '#888',
-    '💡': '#ff4', '🎭': '#f88', '🌈': '#f88', '🔔': '#f4a'
-};
+// Цвета секторов
+const sectorColors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#95e1d3'];
+const sectorNames = ['СЕКТОР 1', 'СЕКТОР 2', 'СЕКТОР 3', 'СЕКТОР 4'];
 
-function addEmoji(q, r, emoji) {
-    hexes[`${q},${r}`] = { q, r, emoji, color: emojiColors[emoji] || '#4af' };
-    drawGrid(ctx, hexes, selectedHex);
-}
+// Товары и сырьё
+const products = ['КОРОНАРИЙ', 'СТРОНЦИУМ', 'САЛЬВАРУС', 'АРГОНИС'];
+const resources = ['Нейтроний', 'Торий', 'Плутоний', 'Уран', 'Кобальт', 'Вольфрам'];
 
-function deleteHex() {
-    if (selectedHex) {
-        delete hexes[`${selectedHex.q},${selectedHex.r}`];
-        selectedHex = null;
-        document.getElementById('selected-info').style.display = 'none';
-        drawGrid(ctx, hexes, selectedHex);
+// Цены (из правил)
+const productPrices = [30, 40, 50, 60];
+const resourcePrices = [10, 15, 20, 25, 30, 35];
+
+// Позиции рисок
+let productRisk = 0;
+let resourceRisk = 0;
+
+function drawField() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    for (let i = 0; i < 4; i++) {
+        drawSector(i);
     }
+    
+    drawCore();
+    drawRisks();
 }
 
-function clearAll() {
-    hexes = {};
-    selectedHex = null;
-    document.getElementById('selected-info').style.display = 'none';
-    drawGrid(ctx, hexes, selectedHex);
-}
-
-function randomFill() {
-    const emojis = Object.keys(emojiColors);
-    for (let q = -GRID_RADIUS; q <= GRID_RADIUS; q++) {
-        for (let r = Math.max(-GRID_RADIUS, -q - GRID_RADIUS); r <= Math.min(GRID_RADIUS, -q + GRID_RADIUS); r++) {
-            if (Math.random() > 0.5) addEmoji(q, r, emojis[Math.floor(Math.random() * emojis.length)]);
+function drawSector(index) {
+    const startAngle = (index * 90 - 90) * Math.PI / 180;
+    const endAngle = ((index + 1) * 90 - 90) * Math.PI / 180;
+    
+    for (let ring = 1; ring <= 5; ring++) {
+        const innerR = 50 + ring * 45;
+        const outerR = 50 + (ring + 1) * 45;
+        
+        const cells = ring + 1;
+        
+        for (let cell = 0; cell < cells; cell++) {
+            const cellStart = startAngle + (cell / cells) * (endAngle - startAngle);
+            const cellEnd = startAngle + ((cell + 1) / cells) * (endAngle - startAngle);
+            
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.arc(centerX, centerY, outerR, cellStart, cellEnd);
+            ctx.arc(centerX, centerY, innerR, cellEnd, cellStart, true);
+            ctx.closePath();
+            
+            if (ring < 5) {
+                ctx.fillStyle = `hsl(${index * 90}, 50%, ${30 + ring * 8}%)`;
+            } else {
+                ctx.fillStyle = '#1a1a2e';
+            }
+            ctx.fill();
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            
+            const angle = (cellStart + cellEnd) / 2;
+            const textR = (innerR + outerR) / 2;
+            const textX = centerX + Math.cos(angle) * textR;
+            const textY = centerY + Math.sin(angle) * textR;
+            
+            ctx.fillStyle = '#fff';
+            ctx.font = '10px monospace';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            if (ring < 5) {
+                ctx.fillText(productPrices[cell], textX, textY);
+            } else {
+                ctx.fillText(resourcePrices[cell], textX, textY);
+            }
         }
     }
+    
+    const sectorAngle = (startAngle + endAngle) / 2;
+    const labelR = 280;
+    ctx.fillStyle = sectorColors[index];
+    ctx.font = 'bold 14px monospace';
+    ctx.fillText(
+        sectorNames[index],
+        centerX + Math.cos(sectorAngle) * labelR,
+        centerY + Math.sin(sectorAngle) * labelR
+    );
 }
 
-function changeEmoji() {
-    if (selectedHex && selectedEmoji) {
-        const hex = hexes[`${selectedHex.q},${selectedHex.r}`];
-        hex.emoji = selectedEmoji;
-        hex.color = emojiColors[selectedEmoji];
-        updateSelectedInfo();
-        drawGrid(ctx, hexes, selectedHex);
-    }
+function drawCore() {
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, 45, 0, Math.PI * 2);
+    ctx.fillStyle = '#0a0a15';
+    ctx.fill();
+    ctx.strokeStyle = '#7df';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    
+    ctx.fillStyle = '#7df';
+    ctx.font = 'bold 12px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('ХРОНОС', centerX, centerY - 8);
+    
+    ctx.font = '16px monospace';
+    ctx.fillText('●', centerX, centerY + 10);
 }
 
-function downloadImage() {
-    const link = document.createElement('a');
-    link.download = 'hex-grid.png';
-    link.href = canvas.toDataURL();
-    link.click();
+function drawRisks() {
+    const productAngle = (productRisk / 6) * Math.PI * 0.4 - Math.PI * 0.7;
+    const productR = 50 + 2 * 45 + 22;
+    
+    ctx.save();
+    ctx.translate(centerX + Math.cos(productAngle) * productR, centerY + Math.sin(productAngle) * productR);
+    ctx.rotate(productAngle + Math.PI / 2);
+    ctx.beginPath();
+    ctx.moveTo(0, -8);
+    ctx.lineTo(5, 5);
+    ctx.lineTo(0, 2);
+    ctx.lineTo(-5, 5);
+    ctx.closePath();
+    ctx.fillStyle = '#ff6b6b';
+    ctx.fill();
+    ctx.restore();
+    
+    const resourceAngle = (resourceRisk / 6) * Math.PI * 0.4 - Math.PI * 0.7;
+    const resourceR = 50 + 5 * 45 + 22;
+    
+
+    ctx.save();
+    ctx.translate(centerX + Math.cos(productAngle) * productR, centerY + Math.sin(productAngle) * productR);
+    ctx.rotate(productAngle + Math.PI / 2);
+    ctx.beginPath();
+    ctx.moveTo(0, -8);
+    ctx.lineTo(5, 5);
+    ctx.lineTo(0, 2);
+    ctx.lineTo(-5, 5);
+    ctx.closePath();
+    ctx.fillStyle = '#ff6b6b';
+    ctx.fill();
+    ctx.restore();
+    
+    // Сырьевая риска (фиолетовая стрелка)
+    const resourceAngle = (resourceRisk / 6) * Math.PI * 0.4 - Math.PI * 0.7;
+    const resourceR = 50 + 5 * 45 + 22;
+    
+    ctx.save();
+    ctx.translate(centerX + Math.cos(resourceAngle) * resourceR, centerY + Math.sin(resourceAngle) * resourceR);
+    ctx.rotate(resourceAngle + Math.PI / 2);
+    ctx.beginPath();
+    ctx.moveTo(0, -8);
+    ctx.lineTo(5, 5);
+    ctx.lineTo(0, 2);
+    ctx.lineTo(-5, 5);
+    ctx.closePath();
+    ctx.fillStyle = '#b388ff';
+    ctx.fill();
+    ctx.restore();
 }
 
-canvas.addEventListener('click', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    const hex = pixelToHex(e.clientX - rect.left - canvas.width / 2, e.clientY - rect.top - canvas.height / 2);
-    const key = `${hex.q},${hex.r}`;
-
-    if (!isInGrid(hex.q, hex.r)) {
-        selectedHex = null;
-        document.getElementById('selected-info').style.display = 'none';
-        drawGrid(ctx, hexes, selectedHex);
-        return;
-    }
-
-    if (hexes[key]) {
-        selectedHex = hex;
-        updateSelectedInfo();
-        document.getElementById('selected-info').style.display = 'block';
-    } else if (selectedEmoji) {
-        addEmoji(hex.q, hex.r, selectedEmoji);
-        selectedHex = hex;
-        updateSelectedInfo();
-        document.getElementById('selected-info').style.display = 'block';
-    } else {
-        selectedHex = null;
-        document.getElementById('selected-info').style.display = 'none';
-    }
-    drawGrid(ctx, hexes, selectedHex);
-});
-
-function updateSelectedInfo() {
-    if (selectedHex) {
-        const hex = hexes[`${selectedHex.q},${selectedHex.r}`];
-        document.getElementById('coords').textContent = `(${selectedHex.q}, ${selectedHex.r})`;
-        document.getElementById('current-emoji').textContent = hex?.emoji || '-';
-        document.getElementById('current-color').textContent = hex?.color || '-';
-    }
+function animateRisks() {
+    productRisk = (productRisk + 0.01) % 6;
+    resourceRisk = (resourceRisk + 0.015) % 6;
+    drawField();
+    requestAnimationFrame(animateRisks);
 }
 
-document.querySelectorAll('.emoji-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-        selectedEmoji = btn.dataset.emoji;
-        if (selectedHex) { addEmoji(selectedHex.q, selectedHex.r, selectedEmoji); updateSelectedInfo(); }
-    });
-});
-
-function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; drawGrid(ctx, hexes, selectedHex); }
-window.addEventListener('resize', resize);
-resize();
+drawField();
+animateRisks();
+    
