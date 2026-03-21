@@ -1,145 +1,158 @@
-const RAW = ["💎", "✨", "⚡", "🌌"];
-
-let game = {
+// Глобальное состояние
+window.game = {
     cycle: 1,
     ray: 0,
     auto: false,
-    interval: null
+    players: {
+        user: { money: 2000, lvl: 1, xp: 0, properties: [], inv: 0 },
+        enemy: { money: 2000, lvl: 1, xp: 0, properties: [], inv: 0 }
+    }
 };
 
-let players = {
-    user: { money: 2000, lvl: 1, xp: 0, properties: [], inv: 0 },
-    enemy: { money: 2000, lvl: 1, xp: 0, properties: [], inv: 0 }
-};
-
+// Инициализация
 function init() {
+    console.log("Игра запущена");
     updateUI();
-    // Запуск цикла ядра (автоматический ход времени)
-    game.interval = setInterval(gameTick, 2000);
+    setInterval(gameTick, 1500); // Скорость игры
 }
 
 function gameTick() {
-    game.ray = (game.ray + 30) % 360;
-    if (game.ray === 0) game.cycle++;
-    
-    // Мой ход (AI Конкурент)
-    aiDecision('enemy');
-    
-    // Ваш ход (если включен автопилот)
-    if (game.auto) aiDecision('user');
-    
+    // Движение луча
+    window.game.ray = (window.game.ray + 30) % 360;
+    if (window.game.ray === 0) {
+        window.game.cycle++;
+        log("system", `Начался цикл ${window.game.cycle}`);
+    }
+
+    // Ход моего AI (Конкурент)
+    aiLogic('enemy');
+
+    // Ход вашего AI (если включен)
+    if (window.game.auto) {
+        aiLogic('user');
+    }
+
     updateUI();
 }
 
-function aiDecision(role) {
-    const p = players[role];
-    
-    // Логика AI:
-    // 1. Если есть товар -> Продать
+// Логика ИИ (общая для обоих)
+function aiLogic(role) {
+    const p = window.game.players[role];
+
+    // 1. Продать, если есть груз
     if (p.inv > 0) {
-        const income = 150 + (p.lvl * 20);
-        p.money += income;
+        const price = 200 + (p.lvl * 10);
+        p.money += price;
         p.inv--;
-        log(role, Продал товар за ${income}₮);
-        addXP(role, 40);
+        addXP(role, 50);
+        log(role, `Продал товар: +${price}₮`);
     } 
-    // 2. Если много денег -> Купить базу
-    else if (p.money > 1000) {
+    // 2. Купить базу, если много денег
+    else if (p.money >= 1200 && p.properties.length < 5) {
         p.money -= 1000;
         const sector = Math.floor(Math.random() * 4) + 1;
         p.properties.push(sector);
-        log(role, Купил базу в секторе S${sector});
         addXP(role, 100);
-    }
-    // 3. Если есть база -> Добыть
+        log(role, `Купил базу в S${sector}`);
+    } 
+    // 3. Добыть, если есть хоть одна база
     else if (p.properties.length > 0) {
-        if (Math.random() > 0.3) {
+        if (Math.random() > 0.4) {
             p.inv++;
-            log(role, Добыча ресурсов успешна);
+            log(role, `Успешная добыча ресурса`);
         }
     }
 }
 
-function addXP(role, amt) {
-    players[role].xp += amt;
-    if (players[role].xp >= 500) {
-        players[role].lvl++;
-        players[role].xp = 0;
-        log(role, УРОВЕНЬ ПОВЫШЕН До ${players[role].lvl}!);
-    }
-}
-
-function showTab(type) {
-    const zone = document.getElementById('action-zone');
+// Ручные действия (кнопки)
+window.manualAction = function(type) {
+    const p = window.game.players.user;
+    
     if (type === 'buy') {
-        zone.innerHTML = <button onclick="manualAction('buy')" class="btn-ai">КУПИТЬ БАЗУ (1000₮)</button>;
-    } else if (type === 'work') {
-        zone.innerHTML = <button onclick="manualAction('work')" class="btn-ai">ДОБЫТЬ РЕСУРС</button>;
-    } else if (type === 'sell') {
-        zone.innerHTML = <button onclick="manualAction('sell')" class="btn-ai">ПРОДАТЬ ВСЁ</button>;
+        if (p.money >= 1000) {
+            p.money -= 1000;
+            const sector = Math.floor(Math.random() * 4) + 1;
+            p.properties.push(sector);
+            addXP('user', 100);
+            log('user', `Вы купили базу в S${sector}`);
+        } else {
+            log('user', "Недостаточно денег!");
+        }
     }
-}
-
-function manualAction(type) {
-    const p = players.user;
-    if (type === 'buy' && p.money >= 1000) {
-        p.money -= 1000;
-        p.properties.push(1);
-        addXP('user', 100);
-        log('user', 'Вы купили базу');
-    } else if (type === 'work' && p.properties.length > 0) {
-        p.inv++;
-        log('user', 'Вы добыли ресурс');
-    } else if (type === 'sell' && p.inv > 0) {
-        p.money += 200;
-        p.inv--;
-        addXP('user', 50);
-        log('user', 'Вы продали товар');
+    
+    if (type === 'work') {
+        if (p.properties.length > 0) {
+            p.inv++;
+            log('user', "Вы добыли ресурс");
+        } else {
+            log('user', "Сначала купите базу!");
+        }
+    }
+    
+    if (type === 'sell') {
+        if (p.inv > 0) {
+            const price = 200 + (p.lvl * 10);
+            p.money += price;
+            p.inv--;
+            addXP('user', 50);
+            log('user', `Вы продали товар за ${price}₮`);
+        } else {
+            log('user', "Нечего продавать!");
+        }
     }
     updateUI();
-}
-
-document.getElementById('ai-toggle').onclick = () => {
-    game.auto = !game.auto;
-    document.getElementById('ai-toggle').textContent = game.auto ? "🤖 ВЫКЛЮЧИТЬ АВТО" : "🤖 ВКЛЮЧИТЬ АВТО";
 };
 
+window.toggleAI = function() {
+    window.game.auto = !window.game.auto;
+    const btn = document.getElementById('ai-toggle-btn');
+    btn.textContent = window.game.auto ? "🤖 ВЫКЛЮЧИТЬ АВТОПИЛОТ" : "🤖 ВКЛЮЧИТЬ АВТОПИЛОТ";
+    btn.style.background = window.game.auto ? "#ff0055" : "#00d2ff";
+};
+
+function addXP(role, amt) {
+    const p = window.game.players[role];
+    p.xp += amt;
+    if (p.xp >= 500) {
+        p.lvl++;
+        p.xp = 0;
+        log(role, `УРОВЕНЬ ПОВЫШЕН: ${p.lvl}`);
+    }
+}
+
 function updateUI() {
-    // Деньги и уровни
-    document.getElementById('p-money').textContent = ${Math.floor(players.user.money)}₮;
-    document.getElementById('e-money').textContent = ${Math.floor(players.enemy.money)}₮;
-    document.getElementById('p-lvl').textContent = players.user.lvl;
-    document.getElementById('e-lvl').textContent = players.enemy.lvl;
-    
-    // Карта и луч
-    document.getElementById('ray').style.transform = rotate(${game.ray}deg);
-    document.getElementById('cycle-num').textContent = game.cycle;
-    
-    // Отрисовка баз на карте
-    [1,2,3,4].forEach(i => {
-        const s = document.querySelector(#s${i} .units);
-        let content = "";
-        players.user.properties.forEach(prop => { if(prop === i) content += "🟦"; });
-        players.enemy.properties.forEach(prop => { if(prop === i) content += "🟥"; });
-        s.textContent = content;
-    });
+    const p = window.game.players.user;
+    const e = window.game.players.enemy;
+
+    // Данные игрока
+    document.getElementById('p-money').textContent = `${Math.floor(p.money)}₮`;
+    document.getElementById('p-lvl').textContent = p.lvl;
+    document.getElementById('p-inv').textContent = p.inv;
+
+    // Данные врага
+    document.getElementById('e-money').textContent = `${Math.floor(e.money)}₮`;
+    document.getElementById('e-lvl').textContent = e.lvl;
+    document.getElementById('e-inv').textContent = e.inv;
+
+    // Карта
+    document.getElementById('ray').style.transform = `rotate(${window.game.ray}deg)`;
+    document.getElementById('cycle-num').textContent = window.game.cycle;
+
+    // Базы на секторах
+    for (let i = 1; i <= 4; i++) {
+        const sectorDiv = document.querySelector(`#s${i} .units`);
+        let units = "";
+        p.properties.forEach(sec => { if(sec === i) units += "🟦"; });
+        e.properties.forEach(sec => { if(sec === i) units += "🟥"; });
+        sectorDiv.textContent = units;
+    }
 }
 
 function log(role, msg) {
-    const text = role === 'user' ? [ВЫ]: ${msg} : [AI]: ${msg};
-    document.getElementById('mini-log').textContent = text;
-}
-
-window.onload = init;
-forEach(prop => { if(prop === i) content += "🟦"; });
-        players.enemy.properties.forEach(prop => { if(prop === i) content += "🟥"; });
-        s.textContent = content;
-    });
-}
-
-function log(role, msg) {
-    const text = role === 'user' ? `[ВЫ]: ${msg}` : `[AI]: ${msg}`;
-    document.getElementById('mini-log').textContent = text;
+    const logDiv = document.getElementById('mini-log');
+    let prefix = role === 'user' ? "👉 " : "🤖 ";
+    if (role === 'system') prefix = "⚙️ ";
+    logDiv.textContent = prefix + msg;
 }
 
 window.onload = init;
