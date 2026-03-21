@@ -1,0 +1,150 @@
+:root {
+    --neon-blue: #00f3ff;
+    --neon-purple: #bc13fe;
+    --neon-green: #39ff14;
+    --bg-dark: #050510;
+    --panel-bg: rgba(20, 20, 40, 0.9);
+}
+
+body {
+    background: var(--bg-dark);
+    color: #fff;
+    font-family: 'Courier New', monospace;
+    margin: 0;
+    overflow: hidden;
+}
+
+#game-wrapper {
+    display: grid;
+    grid-template-columns: 250px 1fr 350px;
+    height: 100vh;
+}
+
+/* RPG Panel */
+#rpg-stats {
+    background: var(--panel-bg);
+    border-right: 2px solid var(--neon-blue);
+    padding: 20px;
+}
+
+.avatar {
+    font-size: 50px;
+    text-align: center;
+    background: var(--neon-purple);
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.xp-bar {
+    width: 100%;
+    height: 10px;
+    background: #222;
+    border: 1px solid var(--neon-blue);
+    margin-top: 5px;
+}
+
+#xp-fill {
+    width: 0%;
+    height: 100%;
+    background: var(--neon-blue);
+    transition: width 0.3s;
+}
+
+.stat { margin: 15px 0; font-size: 0.9em; }
+
+/* Map Area */
+#map-area {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle, #1a1a3a 0%, #050510 100%);
+}
+
+#core-display {
+    width: 120px;
+    height: 120px;
+    background: #000;
+    border: 4px solid var(--neon-purple);
+    border-radius: 50%;
+    position: absolute;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 20px var(--neon-purple);
+}
+
+#ray-pointer {
+    position: absolute;
+    width: 4px;
+    height: 150px;
+    background: linear-gradient(to top, var(--neon-purple), transparent);
+    bottom: 50%;
+    transform-origin: bottom center;
+    transition: transform 0.5s ease-in-out;
+}
+
+#sectors-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 150px;
+    transform: rotate(45deg);
+}
+
+.sector {
+    width: 180px;
+    height: 180px;
+    border: 1px solid var(--neon-blue);
+    transform: rotate(-45deg);
+    background: rgba(0, 243, 255, 0.05);
+    padding: 10px;
+    font-size: 0.7em;
+}
+
+/* Info Panel */
+#info-panel {
+    background: var(--panel-bg);
+    border-left: 2px solid var(--neon-purple);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+#game-log {
+    flex-grow: 1;
+    overflow-y: auto;
+    font-size: 0.8em;
+    color: #aaa;
+    border-top: 1px solid #333;
+    padding-top: 10px;
+}
+
+.log-entry { margin-bottom: 5px; border-left: 2px solid var(--neon-blue); padding-left: 5px; }
+
+button {
+    background: transparent;
+    border: 1px solid var(--neon-green);
+    color: var(--neon-green);
+    padding: 10px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
+
+button:hover { background: rgba(57, 255, 20, 0.2); }
+
+#event-box {
+    background: #200;
+    border: 2px solid #f00;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.hidden { display: none; }
