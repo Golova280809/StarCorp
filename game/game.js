@@ -40,9 +40,6 @@ function drawSector(index) {
             
             ctx.fillStyle = ring < 5 ? 'hsl(' + (index * 90) + ', 50%, ' + (30 + ring * 8) + '%)' : '#1a1a2e';
             ctx.fill();
-            ctx.strokeStyle = '#333';
-            ctx.lineWidth = 1;
-            ctx.stroke();
             
             const angle = (cellStart + cellEnd) / 2;
             const textR = (innerR + outerR) / 2;
@@ -50,7 +47,8 @@ function drawSector(index) {
             ctx.font = '10px monospace';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText(ring < 5 ? productPrices[cell] : resourcePrices[cell], centerX + Math.cos(angle) * textR, centerY + Math.sin(angle) * textR);
+            const price = ring < 5 ? productPrices[cell] : resourcePrices[cell];
+            if (price) ctx.fillText(price, centerX + Math.cos(angle) * textR, centerY + Math.sin(angle) * textR);
         }
     }
     
