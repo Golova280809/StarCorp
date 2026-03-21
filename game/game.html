@@ -2,60 +2,54 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Galactic Concern: CEO RPG</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Galactic Duel: Mobile</title>
     <link rel="stylesheet" href="game.css">
 </head>
 <body>
-    <div id="game-wrapper">
-        <!-- Левая панель: Персонаж -->
-        <aside id="rpg-stats">
-            <div class="profile-header">
-                <div class="avatar">🤖</div>
-                <h2>CEO Протокол</h2>
-                <p>Уровень: <span id="char-level">1</span></p>
-                <div class="xp-bar"><div id="xp-fill"></div></div>
+    <div id="app">
+        <!-- СТАТУС БАР -->
+        <header class="status-bar">
+            <div class="player-stats">
+                <span class="label">ВЫ (Lvl <span id="p-lvl">1</span>)</span>
+                <div class="money" id="p-money">2000₮</div>
             </div>
-            <div class="stats-list">
-                <div class="stat"><span>🧠 Технология:</span> <b id="stat-tech">5</b></div>
-                <div class="stat"><span>🤝 Переговоры:</span> <b id="stat-neg">5</b></div>
-                <div class="stat"><span>🚀 Логистика:</span> <b id="stat-log">5</b></div>
-                <div class="stat"><span>🍀 Удача:</span> <b id="stat-luck">5</b></div>
+            <div class="vs-badge">VS</div>
+            <div class="enemy-stats">
+                <span class="label">AI (Lvl <span id="e-lvl">1</span>)</span>
+                <div class="money" id="e-money">2000₮</div>
             </div>
-            <hr>
-            <div class="ai-control">
-                <h3>ИИ-Ассистент</h3>
-                <button id="ai-toggle-btn">ЗАПУСТИТЬ АВТОПИЛОТ</button>
-                <div id="ai-status">Статус: ОЖИДАНИЕ</div>
-            </div>
-        </aside>
+        </header>
 
-        <!-- Центр: Карта -->
-        <main id="map-area">
-            <div id="core-display">
-                <div id="ray-pointer"></div>
-                <div class="core-info">
-                    <div id="cycle-val">0</div>
-                    <small>ЦИКЛ</small>
-                </div>
+        <!-- КАРТА СЕКТОРОВ -->
+        <main id="map">
+            <div class="core-mini">
+                <div id="ray"></div>
+                <div id="cycle-num">1</div>
             </div>
-            <div id="sectors-grid"></div>
+            <div id="sectors">
+                <div class="sector" id="s1"><span>S1</span><div class="units"></div></div>
+                <div class="sector" id="s2"><span>S2</span><div class="units"></div></div>
+                <div class="sector" id="s3"><span>S3</span><div class="units"></div></div>
+                <div class="sector" id="s4"><span>S4</span><div class="units"></div></div>
+            </div>
         </main>
 
-        <!-- Правая панель: Инфо и Лог -->
-        <section id="info-panel">
-            <div class="wallet">
-                <h3>Капитал: <span id="money-val">2000</span> ₮</h3>
+        <!-- ЛОГ СОБЫТИЙ -->
+        <div id="mini-log">Система готова к запуску...</div>
+
+        <!-- УПРАВЛЕНИЕ -->
+        <nav class="controls">
+            <div class="tabs">
+                <button onclick="showTab('buy')">🏢 База</button>
+                <button onclick="showTab('work')">⛏️ Добыча</button>
+                <button onclick="showTab('sell')">💰 Рынок</button>
             </div>
-            <div id="event-box" class="hidden">
-                <h4>СОБЫТИЕ!</h4>
-                <p id="event-text"></p>
-                <button onclick="closeEvent()">Принято</button>
+            <div class="action-zone" id="action-zone">
+                <p>Выберите действие выше или</p>
+                <button id="ai-toggle" class="btn-ai">🤖 ВКЛЮЧИТЬ АВТОПИЛОТ</button>
             </div>
-            <div class="log-container">
-                <h3>Системный журнал</h3>
-                <div id="game-log"></div>
-            </div>
-        </section>
+        </nav>
     </div>
     <script src="game.js"></script>
 </body>
