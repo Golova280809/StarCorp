@@ -1,198 +1,145 @@
-
-// Конфигурация ресурсов
 const RAW = ["💎", "✨", "⚡", "🌌"];
-const PROD = ["👑", "🔋", "🧪"];
 
-let state = {
-    player: {
-        money: 2000,
-        level: 1,
-        xp: 0,
-        stats: { tech: 5, neg: 5, log: 5, luck: 5 },
-        inventory: {},
-        properties: []
-    },
-    game: {
-        cycle: 0,
-        ray: 0,
-        auto: false,
-        prices: {} // Будет заполнено
-    }
+let game = {
+    cycle: 1,
+    ray: 0,
+    auto: false,
+    interval: null
 };
 
-// --- ИНИЦИАЛИЗАЦИЯ ---
+let players = {
+    user: { money: 2000, lvl: 1, xp: 0, properties: [], inv: 0 },
+    enemy: { money: 2000, lvl: 1, xp: 0, properties: [], inv: 0 }
+};
+
 function init() {
-    createSectors();
     updateUI();
-    log("Система инициализирована. Ожидание команд CEO...");
+    // Запуск цикла ядра (автоматический ход времени)
+    game.interval = setInterval(gameTick, 2000);
 }
 
-function createSectors() {
-    const grid = document.getElementById('sectors-grid');
-    for (let i = 1; i <= 4; i++) {
-        const div = document.createElement('div');
-        div.className = 'sector';
-        div.id = `sector-${i}`;
-        div.innerHTML = `<b>СЕКТОР ${i}</b><div class="content"></div>`;
-        grid.appendChild(div);
-        
-        // Генерация цен для сектора
-        state.game.prices[i] = {
-            buy: 40 + Math.random() * 20,
-            sell: 100 + Math.random() * 50
-        };
-    }
-}
-
-// --- RPG СИСТЕМА ---
-function addXP(amount) {
-    state.player.xp += amount;
-    if (state.player.xp >= state.player.level * 100) {
-        state.player.level++;
-        state.player.xp = 0;
-        levelUp();
-    }
+function gameTick() {
+    game.ray = (game.ray + 30) % 360;
+    if (game.ray === 0) game.cycle++;
+    
+    // Мой ход (AI Конкурент)
+    aiDecision('enemy');
+    
+    // Ваш ход (если включен автопилот)
+    if (game.auto) aiDecision('user');
+    
     updateUI();
 }
 
-function levelUp() {
-    // Авто-прокачка случайного навыка
-    const s = Object.keys(state.player.stats);
-    const chosen = s[Math.floor(Math.random() * s.length)];
-    state.player.stats[chosen] += 2;
-    log(`УРОВЕНЬ ПОВЫШЕН! Навык ${chosen} улучшен.`, "green");
-}
-
-// --- ИИ ЛОГИКА (АВТОПИЛОТ) ---
-let aiInterval;
-document.getElementById('ai-toggle-btn').addEventListener('click', () => {
-    state.game.auto = !state.game.auto;
-    const btn = document.getElementById('ai-toggle-btn');
-    const status = document.getElementById('ai-status');
+function aiDecision(role) {
+    const p = players[role];
     
-    if (state.game.auto) {
-        btn.textContent = "ВЫКЛЮЧИТЬ АВТОПИЛОТ";
-        status.textContent = "Статус: АКТИВЕН";
-        aiInterval = setInterval(aiTurn, 1500);
-    } else {
-        btn.textContent = "ЗАПУСТИТЬ АВТОПИЛОТ";
-        status.textContent = "Статус: ОЖИДАНИЕ";
-        clearInterval(aiInterval);
-    }
-});
-
-function aiTurn() {
-    // Простая иерархия решений ИИ:
-    // 1. Если мало денег и есть товар -> Продать
-    // 2. Если есть деньги и нет баз -> Купить базу
-    // 3. Если есть база -> Добыть ресурс
-    // 4. Закончить ход
-    
-    const p = state.player;
-    
-    // 1. Попытка продать
-    if (Object.keys(p.inventory).length > 0) {
-        sellDecision();
+    // Логика AI:
+    // 1. Если есть товар -> Продать
+    if (p.inv > 0) {
+        const income = 150 + (p.lvl * 20);
+        p.money += income;
+        p.inv--;
+        log(role, Продал товар за ${income}₮);
+        addXP(role, 40);
     } 
-    // 2. Покупка недвижимости
-    else if (p.money > 800 && p.properties.length < 3) {
-        buyProperty();
+    // 2. Если много денег -> Купить базу
+    else if (p.money > 1000) {
+        p.money -= 1000;
+        const sector = Math.floor(Math.random() * 4) + 1;
+        p.properties.push(sector);
+        log(role, Купил базу в секторе S${sector});
+        addXP(role, 100);
     }
-    // 3. Добыча
+    // 3. Если есть база -> Добыть
     else if (p.properties.length > 0) {
-        extractResource();
-    }
-    
-    nextTick();
-}
-
-function buyProperty() {
-    const cost = 1000 - (state.player.stats.neg * 10); // Скидка за переговоры
-    if (state.player.money >= cost) {
-        state.player.money -= cost;
-        const id = state.player.properties.length + 1;
-        state.player.properties.push({ id, sector: Math.floor(Math.random()*4)+1 });
-        log(`ИИ: Куплена база #${id} за ${cost}₮`, "blue");
-        addXP(30);
+        if (Math.random() > 0.3) {
+            p.inv++;
+            log(role, Добыча ресурсов успешна);
+        }
     }
 }
 
-function extractResource() {
-    const chance = 0.5 + (state.player.stats.luck * 0.02);
-    if (Math.random() < chance) {
-        const res = RAW[Math.floor(Math.random() * RAW.length)];
-        state.player.inventory[res] = (state.player.inventory[res] || 0) + 1;
-        log(`ИИ: Добыто сырье ${res}`);
-    } else {
-        log("ИИ: Ошибка добычи - нестабильность ядра", "red");
+function addXP(role, amt) {
+    players[role].xp += amt;
+    if (players[role].xp >= 500) {
+        players[role].lvl++;
+        players[role].xp = 0;
+        log(role, УРОВЕНЬ ПОВЫШЕН До ${players[role].lvl}!);
     }
 }
 
-function sellDecision() {
-    const res = Object.keys(state.player.inventory)[0];
-    const price = Math.floor(state.game.prices[1].sell + (state.player.stats.tech * 5));
-    state.player.money += price;
-    delete state.player.inventory[res];
-    log(`ИИ: Продано ${res} за ${price}₮`, "green");
-    addXP(50);
+function showTab(type) {
+    const zone = document.getElementById('action-zone');
+    if (type === 'buy') {
+        zone.innerHTML = <button onclick="manualAction('buy')" class="btn-ai">КУПИТЬ БАЗУ (1000₮)</button>;
+    } else if (type === 'work') {
+        zone.innerHTML = <button onclick="manualAction('work')" class="btn-ai">ДОБЫТЬ РЕСУРС</button>;
+    } else if (type === 'sell') {
+        zone.innerHTML = <button onclick="manualAction('sell')" class="btn-ai">ПРОДАТЬ ВСЁ</button>;
+    }
 }
 
-// --- СИСТЕМА ХОДОВ ---
-function nextTick() {
-    state.game.ray = (state.game.ray + 30) % 360;
-    document.getElementById('ray-pointer').style.transform = `rotate(${state.game.ray}deg)`;
-    
-    if (state.game.ray === 0) {
-        state.game.cycle++;
-        triggerRandomEvent();
+function manualAction(type) {
+    const p = players.user;
+    if (type === 'buy' && p.money >= 1000) {
+        p.money -= 1000;
+        p.properties.push(1);
+        addXP('user', 100);
+        log('user', 'Вы купили базу');
+    } else if (type === 'work' && p.properties.length > 0) {
+        p.inv++;
+        log('user', 'Вы добыли ресурс');
+    } else if (type === 'sell' && p.inv > 0) {
+        p.money += 200;
+        p.inv--;
+        addXP('user', 50);
+        log('user', 'Вы продали товар');
     }
     updateUI();
 }
 
-function triggerRandomEvent() {
-    const events = [
-        { t: "Солнечная вспышка! Налоги удвоены.", effect: () => state.player.money -= 200 },
-        { t: "Технологический прорыв! +XP.", effect: () => addXP(100) },
-        { t: "Пиратский рейд! Потеря части инвентаря.", effect: () => state.player.inventory = {} }
-    ];
-    const ev = events[Math.floor(Math.random() * events.length)];
-    
-    document.getElementById('event-box').classList.remove('hidden');
-    document.getElementById('event-text').textContent = ev.t;
-    ev.effect();
-}
+document.getElementById('ai-toggle').onclick = () => {
+    game.auto = !game.auto;
+    document.getElementById('ai-toggle').textContent = game.auto ? "🤖 ВЫКЛЮЧИТЬ АВТО" : "🤖 ВКЛЮЧИТЬ АВТО";
+};
 
-function closeEvent() {
-    document.getElementById('event-box').classList.add('hidden');
-}
-
-// --- UI ---
 function updateUI() {
-    document.getElementById('money-val').textContent = Math.floor(state.player.money);
-    document.getElementById('char-level').textContent = state.player.level;
-    document.getElementById('xp-fill').style.width = `${state.player.xp / (state.player.level)}%`;
-    document.getElementById('cycle-val').textContent = state.game.cycle;
+    // Деньги и уровни
+    document.getElementById('p-money').textContent = ${Math.floor(players.user.money)}₮;
+    document.getElementById('e-money').textContent = ${Math.floor(players.enemy.money)}₮;
+    document.getElementById('p-lvl').textContent = players.user.lvl;
+    document.getElementById('e-lvl').textContent = players.enemy.lvl;
     
-    document.getElementById('stat-tech').textContent = state.player.stats.tech;
-    document.getElementById('stat-neg').textContent = state.player.stats.neg;
-    document.getElementById('stat-log').textContent = state.player.stats.log;
-    document.getElementById('stat-luck').textContent = state.player.stats.luck;
-
-    // Отрисовка инвентаря на секторах (визуализация)
-    for (let i = 1; i <= 4; i++) {
-        const sector = document.querySelector(`#sector-${i} .content`);
-        sector.innerHTML = state.player.properties.filter(p => p.sector === i).map(() => '🏠').join(' ');
-        if (i === 1) sector.innerHTML += "<br>" + Object.keys(state.player.inventory).join(' ');
-    }
+    // Карта и луч
+    document.getElementById('ray').style.transform = rotate(${game.ray}deg);
+    document.getElementById('cycle-num').textContent = game.cycle;
+    
+    // Отрисовка баз на карте
+    [1,2,3,4].forEach(i => {
+        const s = document.querySelector(#s${i} .units);
+        let content = "";
+        players.user.properties.forEach(prop => { if(prop === i) content += "🟦"; });
+        players.enemy.properties.forEach(prop => { if(prop === i) content += "🟥"; });
+        s.textContent = content;
+    });
 }
 
-function log(msg, color = "") {
-    const l = document.getElementById('game-log');
-    const div = document.createElement('div');
-    div.className = 'log-entry';
-    if (color) div.style.color = color;
-    div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
-    l.prepend(div);
+function log(role, msg) {
+    const text = role === 'user' ? [ВЫ]: ${msg} : [AI]: ${msg};
+    document.getElementById('mini-log').textContent = text;
+}
+
+window.onload = init;
+forEach(prop => { if(prop === i) content += "🟦"; });
+        players.enemy.properties.forEach(prop => { if(prop === i) content += "🟥"; });
+        s.textContent = content;
+    });
+}
+
+function log(role, msg) {
+    const text = role === 'user' ? `[ВЫ]: ${msg}` : `[AI]: ${msg}`;
+    document.getElementById('mini-log').textContent = text;
 }
 
 window.onload = init;
