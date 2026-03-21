@@ -3,25 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Galactic Duel: Mobile</title>
-    <link rel="stylesheet" href="game.css">
+    <title>Galactic Duel: Fix</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="app">
-        <!-- СТАТУС БАР -->
         <header class="status-bar">
             <div class="player-stats">
                 <span class="label">ВЫ (Lvl <span id="p-lvl">1</span>)</span>
                 <div class="money" id="p-money">2000₮</div>
+                <div class="inv">Груз: <span id="p-inv">0</span></div>
             </div>
             <div class="vs-badge">VS</div>
             <div class="enemy-stats">
                 <span class="label">AI (Lvl <span id="e-lvl">1</span>)</span>
                 <div class="money" id="e-money">2000₮</div>
+                <div class="inv">Груз: <span id="e-inv">0</span></div>
             </div>
         </header>
 
-        <!-- КАРТА СЕКТОРОВ -->
         <main id="map">
             <div class="core-mini">
                 <div id="ray"></div>
@@ -35,22 +35,22 @@
             </div>
         </main>
 
-        <!-- ЛОГ СОБЫТИЙ -->
-        <div id="mini-log">Система готова к запуску...</div>
+        <div id="mini-log">Нажмите на кнопки снизу, чтобы начать...</div>
 
-        <!-- УПРАВЛЕНИЕ -->
         <nav class="controls">
+            <!-- Кнопки вкладок -->
             <div class="tabs">
-                <button onclick="showTab('buy')">🏢 База</button>
-                <button onclick="showTab('work')">⛏️ Добыча</button>
-                <button onclick="showTab('sell')">💰 Рынок</button>
+                <button onclick="manualAction('buy')">🏢 Купить базу (1к)</button>
+                <button onclick="manualAction('work')">⛏️ Добыча</button>
+                <button onclick="manualAction('sell')">💰 Продать всё</button>
             </div>
-            <div class="action-zone" id="action-zone">
-                <p>Выберите действие выше или</p>
-                <button id="ai-toggle" class="btn-ai">🤖 ВКЛЮЧИТЬ АВТОПИЛОТ</button>
+            
+            <!-- Постоянная кнопка ИИ -->
+            <div class="ai-zone">
+                <button id="ai-toggle-btn" onclick="toggleAI()">🤖 ВКЛЮЧИТЬ АВТОПИЛОТ</button>
             </div>
         </nav>
     </div>
-    <script src="game.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
