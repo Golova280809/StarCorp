@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Galactic Concern: CEO RPG</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-wrapper">
+        <!-- Левая панель: Персонаж -->
+        <aside id="rpg-stats">
+            <div class="profile-header">
+                <div class="avatar">🤖</div>
+                <h2>CEO Протокол</h2>
+                <p>Уровень: <span id="char-level">1</span></p>
+                <div class="xp-bar"><div id="xp-fill"></div></div>
+            </div>
+            <div class="stats-list">
+                <div class="stat"><span>🧠 Технология:</span> <b id="stat-tech">5</b></div>
+                <div class="stat"><span>🤝 Переговоры:</span> <b id="stat-neg">5</b></div>
+                <div class="stat"><span>🚀 Логистика:</span> <b id="stat-log">5</b></div>
+                <div class="stat"><span>🍀 Удача:</span> <b id="stat-luck">5</b></div>
+            </div>
+            <hr>
+            <div class="ai-control">
+                <h3>ИИ-Ассистент</h3>
+                <button id="ai-toggle-btn">ЗАПУСТИТЬ АВТОПИЛОТ</button>
+                <div id="ai-status">Статус: ОЖИДАНИЕ</div>
+            </div>
+        </aside>
+
+        <!-- Центр: Карта -->
+        <main id="map-area">
+            <div id="core-display">
+                <div id="ray-pointer"></div>
+                <div class="core-info">
+                    <div id="cycle-val">0</div>
+                    <small>ЦИКЛ</small>
+                </div>
+            </div>
+            <div id="sectors-grid"></div>
+        </main>
+
+        <!-- Правая панель: Инфо и Лог -->
+        <section id="info-panel">
+            <div class="wallet">
+                <h3>Капитал: <span id="money-val">2000</span> ₮</h3>
+            </div>
+            <div id="event-box" class="hidden">
+                <h4>СОБЫТИЕ!</h4>
+                <p id="event-text"></p>
+                <button onclick="closeEvent()">Принято</button>
+            </div>
+            <div class="log-container">
+                <h3>Системный журнал</h3>
+                <div id="game-log"></div>
+            </div>
+        </section>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
